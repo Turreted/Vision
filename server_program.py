@@ -56,15 +56,18 @@ class StreamViewer:
     
     def send_info(self):
 
+        i = 0
         while self.resp_socket and self.keep_running:
 
         # Do openCV image processing here
+
             try:
-                self.resp_socket.send_string("dummy data")
+                self.resp_socket.send_string(f"dummy data {i}")
             except KeyboardInterrupt:
                 self.keep_running = False
                 break
         
+            i+=1
             sleep(0.5)
         
                 
@@ -89,7 +92,6 @@ def main():
 
     stream_viewer = StreamViewer(port)
     stream_viewer.receive_stream()
-
 
 if __name__ == '__main__':
     main()
