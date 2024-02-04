@@ -53,7 +53,7 @@ class Streamer:
         self.keep_running = True
 
         while self.footage_socket and self.keep_running:
-            if time() - self.stopwatch > 0.025:
+            if time() - self.stopwatch > 0.07:
                 try:
                     frame = camera.current_frame.read()  # grab the current frame
                     compressed = cv2.resize(frame, (780, 540),interpolation = cv2.INTER_LINEAR)
@@ -72,13 +72,13 @@ class Streamer:
     def resp_thread(self):
         while self.resp_socket and self.keep_running:
             try:
-                data = self.resp_socket.recv_string()
-                print(data)
-            except KeyboardInterrupt:
-                self.keep_running = False
-                break
-            #data = self.resp_socket.recv_string()
-            #print(data)
+                data = self.resp_socket.recv_string(flags = zmq.NOBLOCK)
+                if data: print(data)
+            except zmq.ZMQError as e:               
+                if e.errno == zmq.EAGAIN:
+                    pass
+                else:
+                    exit()
 
     def stop(self):
         """
@@ -86,7 +86,6 @@ class Streamer:
         :return: None
         """
         self.keep_running = False
-
 
 def main():
     port = PORT
