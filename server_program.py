@@ -24,6 +24,7 @@ class StreamViewer:
         self.footage_socket.setsockopt_string(zmq.SUBSCRIBE, np.unicode_(''))
         self.current_frame = None
         self.keep_running = True
+        print(f"bound to port {port}")
 
         context = zmq.Context()
         self.resp_socket = context.socket(zmq.PUB)
